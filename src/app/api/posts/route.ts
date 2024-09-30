@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { IUser } from "../../../../types/user";
-import { connectDB } from "../../../../db/db";
-import { IPostBase, Post } from "../../../../model/post";
-import { auth } from "@clerk/nextjs/server";
+import { connectDB } from "@/db/db";
+import { IPostBase, Post } from "@/model/post";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 export async function GET() {
   try {
@@ -31,10 +31,36 @@ export async function POST(request: Request) {
   try {
     await connectDB();
 
-    const { user, imageUrl, text }: AddPostRequestBody = await request.json();
+    const user = await currentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    let newuser: IUser | null = null;
+
+    if (user && user.firstName && user.lastName) {
+      newuser = {
+        userId: user?.id,
+        userImage: user?.imageUrl,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+      };
+    }
+
+    if (!newuser) {
+      return NextResponse.json(
+        { error: "User information is incomplete" },
+        { status: 400 }
+      );
+    }
+
+    const { imageUrl, text }: AddPostRequestBody = await request.json();
 
     const postData: IPostBase = {
-      user,
+      user: newuser,
       text,
       ...(imageUrl && { imageUrl }),
     };
