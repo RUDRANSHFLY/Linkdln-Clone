@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "../../../../../../db/db";
-import { Post } from "../../../../../../model/post";
+import { connectDB } from "@/db/db";
+import { Post } from "@/model/post";
 import { IUser } from "../../../../../../types/user";
 import { currentUser } from "@clerk/nextjs/server";
 

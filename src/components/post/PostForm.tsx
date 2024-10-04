@@ -3,11 +3,12 @@
 "use client";
 import React, { useRef, useState } from "react";
 
-import { useUser } from "@clerk/nextjs";
+import { SignedIn, useUser } from "@clerk/nextjs";
 import UserProfile from "../user/UserProfile";
 import { Button } from "../ui/button";
 import { ImageIcon, XIcon } from "lucide-react";
 import createPostAction from "@/actions/createPostAction";
+import { toast } from "sonner";
 
 const PostForm = () => {
   const { user } = useUser();
@@ -43,87 +44,95 @@ const PostForm = () => {
   };
 
   return (
-    <div className={"w-full flex items-center space-x-2"}>
-      <form
-        ref={formRef}
-        className={"flex flex-col space-y-2 w-full"}
-        action={(formData) => {
-          handlePostAction(formData);
-        }}
-      >
-        <div className={"flex items-center space-x-2"}>
-          {user && (
-            <UserProfile
-              imageSrc={user?.imageUrl}
-              firstName={user?.firstName}
-              lastName={user?.lastName}
+    <SignedIn>
+      <div className={"w-full flex items-center space-x-2"}>
+        <form
+          ref={formRef}
+          className={"flex flex-col space-y-2 w-full"}
+          action={(formData) => {
+            const promise = handlePostAction(formData);
+
+            toast.promise(promise, {
+              loading: "Creating post...",
+              success: "Post Created",
+              error: "Failed to create Post....",
+            });
+          }}
+        >
+          <div className={"flex items-center space-x-2"}>
+            {user && (
+              <UserProfile
+                imageSrc={user?.imageUrl}
+                firstName={user?.firstName}
+                lastName={user?.lastName}
+              />
+            )}
+            <input
+              id={"post_input"}
+              type={"text"}
+              name={"postInput"}
+              placeholder={"Start writing a post ...."}
+              className={"flex-1 outline-none rounded-full py-3 px-4 border"}
             />
-          )}
-          <input
-            id={"post_input"}
-            type={"text"}
-            name={"postInput"}
-            placeholder={"Start writing a post ...."}
-            className={"flex-1 outline-none rounded-full py-3 px-4 border"}
-          />
 
-          <input
-            ref={fileInputRef}
-            type={"file"}
-            name={"image"}
-            onChange={handleImageInputChange}
-            accept={"image/*"}
-            hidden
-          />
-
-          <Button
-            type={"submit"}
-            hidden
-            variant={"secondary"}
-            className={"hidden"}
-          >
-            Post
-          </Button>
-        </div>
-
-        {/*  preview condiotnal check */}
-        {preview && (
-          <div className={""}>
-            <img
-              src={preview}
-              alt={"input File"}
-              className={
-                "w-full h-52 sm:h-60 md:h-72  lg:h-80 xl:h-96 object-cover rounded-md"
-              }
+            <input
+              ref={fileInputRef}
+              type={"file"}
+              name={"image"}
+              onChange={handleImageInputChange}
+              accept={"image/*"}
+              hidden
             />
+
+            <Button
+              type={"submit"}
+              hidden
+              variant={"secondary"}
+              className={"hidden"}
+            >
+              Post
+            </Button>
           </div>
-        )}
 
-        <div className={"flex justify-end space-x-3"}>
-          <Button
-            type={"button"}
-            className={"flex space-x-2"}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <ImageIcon size={20} color={"currentColor"} />
-            <p>{preview ? "Change" : "Add"} Image</p>
-          </Button>
-
-          {/* add a remove preview button */}
-
+          {/*  preview condiotnal check */}
           {preview && (
+            <div className={""}>
+              <img
+                src={preview}
+                alt={"input File"}
+                className={
+                  "w-full h-52 sm:h-60 md:h-72  lg:h-80 xl:h-96 object-cover rounded-md"
+                }
+              />
+            </div>
+          )}
+
+          <div className={"flex justify-end space-x-3"}>
             <Button
               type={"button"}
-              onClick={() => setPreview(null)}
-              variant={"destructive"}
+              className={"flex space-x-2"}
+              onClick={() => fileInputRef.current?.click()}
             >
-              <XIcon size={16} className={"mr-3"} />
-              Remove Image
+              <ImageIcon size={20} color={"currentColor"} />
+              <p>{preview ? "Change" : "Add"} Image</p>
             </Button>
-          )}
-        </div>
-      </form>
-    </div>
+
+            {/* add a remove preview button */}
+
+            {preview && (
+              <Button
+                type={"button"}
+                onClick={() => setPreview(null)}
+                variant={"destructive"}
+              >
+                <XIcon size={16} className={"mr-3"} />
+                Remove Image
+              </Button>
+            )}
+          </div>
+        </form>
+      </div>
+    </SignedIn>
   );
 };
 

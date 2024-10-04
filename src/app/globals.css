@@ -24,6 +24,10 @@ body {
   .icons p {
     @apply text-xs text-gray-500;
   }
+
+  .postButton {
+    @apply flex justify-center flex-1;
+  }
 }
 
 /* @layer base {

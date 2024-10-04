@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import NavBar from "@/components/navbar/NavBar";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,9 +33,8 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
         >
           {/*TODO : Toaster */}
-
+          <Toaster position={"bottom-left"} />
           {/* TODO: Header */}
-
           <header className={"border-b sticky top-0 bg-white z-50"}>
             <NavBar />
           </header>

@@ -1,6 +1,6 @@
-import { connectDB } from "../../../../../../db/db";
+import { connectDB } from "../../../../../db/db";
 import { NextResponse } from "next/server";
-import { Post } from "../../../../../../model/post";
+import { Post } from "../../../../../model/post";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 export async function GET(

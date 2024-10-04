@@ -1,7 +1,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { connectDB } from "../../../../../../db/db";
+import { connectDB } from "../../../../../db/db";
 import { NextResponse } from "next/server";
-import { Post } from "../../../../../../model/post";
+import { Post } from "../../../../../model/post";
 
 export async function POST(
   request: Request,

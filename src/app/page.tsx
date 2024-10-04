@@ -14,11 +14,11 @@ export default async function Home() {
     <div className={"grid max-w-6xl mx-auto grid-cols-8 mt-5 sm:px-5"}>
       <section className={"hidden md:inline md:col-span-2"}>
         {/* user info */}
-        <UserInfo />
+        <UserInfo posts={posts} />
       </section>
       <section
         className={
-          "col-span-full md:col-span-6 xl:col-span-4 xl:max-w-xl mx-auto w-full "
+          "col-span-full md:col-span-6 xl:col-span-6 xl:max-w-xl mx-auto w-full "
         }
       >
         {/* post form */}
@@ -26,9 +26,9 @@ export default async function Home() {
         {/* post feed */}
         <PostFeed posts={posts} />
       </section>
-      <section className={"hidden xl:inline justify-center col-span-2"}>
-        {/* user profile widegt 2 */}
-      </section>
+      {/* <section className={"hidden xl:inline justify-center col-span-2"}> */}
+      {/* user profile widegt 2 */}
+      {/* </section> */}
     </div>
   );
 }

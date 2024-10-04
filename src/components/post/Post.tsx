@@ -2,22 +2,25 @@
 "use client";
 
 import { IPostDocument } from "@/model/post";
-import { useUser } from "@clerk/nextjs";
+import { SignedIn, useUser } from "@clerk/nextjs";
 import React from "react";
 import UserProfile from "../user/UserProfile";
 import { Badge } from "../ui/badge";
 import ReactTimeago from "react-timeago";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
+import deletePostAction from "@/actions/deletePostAction";
+import PostOptions from "./PostOptions";
+import { toast } from "sonner";
 
 interface PostProps {
   post: IPostDocument;
 }
 
 const Post = ({ post }: PostProps) => {
-  const user = useUser();
+  const { user } = useUser();
 
-  const isAuthor = user?.id === post?.user?.id;
+  const isAuthor = user?.id === post?.user?.userId;
 
   return (
     <div className={"bg-white rounded-md border"}>
@@ -26,7 +29,7 @@ const Post = ({ post }: PostProps) => {
           <UserProfile
             imageSrc={post?.user?.userImage}
             firstName={post?.user?.firstName?.charAt(0)}
-            lastName={post?.user?.lastName.charAt(0)}
+            lastName={post?.user?.lastName?.charAt(0)}
           />
         </div>
         <div className={"flex justify-between flex-1"}>
@@ -48,15 +51,32 @@ const Post = ({ post }: PostProps) => {
             </p>
           </div>
           {isAuthor && (
-            <Button variant={"outline"}>
+            <Button
+              variant={"outline"}
+              onClick={() => {
+                const promise = deletePostAction(post._id.toString());
+                toast.promise(promise, {
+                  loading: "deleting post...",
+                  success: "Post Delted",
+                  error: "Failed to delte Post....",
+                });
+              }}
+            >
               {" "}
               <Trash2 />
             </Button>
           )}
         </div>
       </div>
-      <h1>{post.text}</h1>
-      <img src={post.imageUrl} alt={"Post Image"} />
+      <div>
+        <h1 className={"px-4 pb-2 mt-2"}>{post.text}</h1>
+        <img src={post.imageUrl} className={"w-full"} alt={"Post Image"} />
+      </div>
+      <div>
+        <SignedIn>
+          <PostOptions post={post} />
+        </SignedIn>
+      </div>
     </div>
   );
 };
