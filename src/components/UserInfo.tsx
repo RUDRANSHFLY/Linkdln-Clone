@@ -11,9 +11,9 @@ const UserInfo = async ({ posts }: { posts: IPostDocument[] }) => {
   const firstName = user?.firstName;
   const lastName = user?.lastName;
 
-  const userPosts = posts.filter((post) => post.user.userId === user?.id);
+  const userPosts = posts?.filter((post) => post.user.userId === user?.id);
 
-  const userComments = posts.flatMap(
+  const userComments = posts?.flatMap(
     (post) =>
       post?.comments?.filter((comment) => comment.user.userId === user?.id) ||
       []
@@ -50,12 +50,12 @@ const UserInfo = async ({ posts }: { posts: IPostDocument[] }) => {
 
         <div className={"flex justify-between w-full px-4 text-sm"}>
           <p className={"font-semibold text-gray-400 "}>Posts</p>
-          <p className={"text-blue-400"}>{userPosts.length}</p>
+          <p className={"text-blue-400"}>{userPosts?.length}</p>
         </div>
 
         <div className={"flex justify-between w-full px-4 text-sm"}>
           <p className={"font-semibold text-gray-400 "}>Comments</p>
-          <p className={"text-blue-400"}>{userComments.length}</p>
+          <p className={"text-blue-400"}>{userComments?.length}</p>
         </div>
       </SignedIn>
       <SignedOut>

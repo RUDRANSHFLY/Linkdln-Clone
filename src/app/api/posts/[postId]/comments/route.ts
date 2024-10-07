@@ -50,6 +50,13 @@ export async function POST(
 
     const logged_user = await currentUser();
 
+    if (!logged_user) {
+      return NextResponse.json(
+        { error: "User not authenticated" },
+        { status: 401 }
+      );
+    }
+
     if (logged_user && logged_user.lastName && logged_user.firstName) {
       const newUser: IUser = {
         userId: logged_user?.id,

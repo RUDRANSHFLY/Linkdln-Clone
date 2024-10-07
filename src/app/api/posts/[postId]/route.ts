@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "../../../../db/db";
 import { Post } from "../../../../model/post";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function GET(
   request: Request,
@@ -34,11 +34,16 @@ export async function POST(
   request: Request,
   { params }: { params: { postId: string } }
 ) {
-  auth().protect();
-
   await connectDB();
 
   const user = await currentUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "User not authenticated" },
+      { status: 401 }
+    );
+  }
 
   try {
     const post = await Post.findById(params.postId);

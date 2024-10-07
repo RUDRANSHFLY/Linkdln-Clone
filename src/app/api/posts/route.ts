@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { IUser } from "../../../../types/user";
 import { connectDB } from "@/db/db";
 import { IPostBase, Post } from "@/model/post";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function GET() {
   try {
@@ -26,11 +26,8 @@ export interface AddPostRequestBody {
 }
 
 export async function POST(request: Request) {
-  auth().protect();
-
   try {
     await connectDB();
-
     const user = await currentUser();
     if (!user) {
       return NextResponse.json(
