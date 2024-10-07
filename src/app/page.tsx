@@ -4,7 +4,7 @@ import UserInfo from "@/components/UserInfo";
 import { connectDB } from "@/db/db";
 import { Post } from "@/model/post";
 
-// export const revalidate = 0;
+export const revalidate = 0;
 
 export default async function Home() {
   await connectDB();
